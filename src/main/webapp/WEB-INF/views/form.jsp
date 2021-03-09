@@ -104,14 +104,6 @@
                 </div>
                 </c:forEach>
 
-<%--                <div class="form-group form-group--checkbox">--%>
-<%--                    <label>--%>
-<%--                        <input type="checkbox" name="categories" value="other" />--%>
-<%--                        <span class="checkbox"></span>--%>
-<%--                        <span class="description">inne</span>--%>
-<%--                    </label>--%>
-<%--                </div>--%>
-
                 <div class="form-group form-group--buttons">
                     <button type="button" class="btn next-step">Dalej</button>
                 </div>
@@ -203,7 +195,6 @@
                             <label>
                                 Uwagi dla kuriera
                                 <textarea id="pickUpComment" name="pickupComment" rows="5"></textarea>
-<%--                                <form:textarea path="pickupComment" rows="5"/>--%>
                             </label>
                         </div>
                     </div>
