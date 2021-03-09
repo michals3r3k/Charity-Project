@@ -3,6 +3,7 @@ package pl.coderslab.charity.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import pl.coderslab.charity.model.Donation;
 import pl.coderslab.charity.service.CategoryService;
 import pl.coderslab.charity.service.DonationService;
@@ -26,6 +27,17 @@ public class DonationController {
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("institutions", institutionService.findAll());
         return "form";
+    }
+
+    @PostMapping("/form")
+    public String donationFormPost(Donation donation) {
+        donationService.save(donation);
+        return "redirect:/form/confirm";
+    }
+
+    @GetMapping("/form/confirm")
+    public String confirmDonation(){
+        return "formConfirm";
     }
 
 }

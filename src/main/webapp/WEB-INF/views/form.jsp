@@ -202,7 +202,8 @@
                         <div class="form-group form-group--inline">
                             <label>
                                 Uwagi dla kuriera
-                                <textarea id = pickUpComment name="pickUpComment" rows="5"></textarea>
+                                <textarea id="pickUpComment" name="pickupComment" rows="5"></textarea>
+<%--                                <form:textarea path="pickupComment" rows="5"/>--%>
                             </label>
                         </div>
                     </div>

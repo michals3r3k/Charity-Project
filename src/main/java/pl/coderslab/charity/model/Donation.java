@@ -21,7 +21,7 @@ public class Donation {
     private String city;
     private String zipCode;
     private String phoneNumber;
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "donation_category")
     private List<Category> categories;
     @ManyToOne
