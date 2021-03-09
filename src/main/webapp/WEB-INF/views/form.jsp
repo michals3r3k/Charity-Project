@@ -96,6 +96,7 @@
                                 type="checkbox"
                                 name="categories"
                                 value="${category.id}"
+                                data-category="${category.name}"
                         />
                         <span class="checkbox"></span>
                         <span class="description">${category.name}</span>
@@ -142,7 +143,7 @@
                 <c:forEach items="${institutions}" var="institution">
                 <div class="form-group form-group--checkbox">
                     <label>
-                        <input type="radio" name="institution" value="${institution.id}" />
+                        <input type="radio" name="institution" value="${institution.id}" data-institution="${institution.name}" />
                         <span class="checkbox radio"></span>
                         <span class="description">
                   <div class="title">Fundacja “${institution.name}”</div>
@@ -201,14 +202,14 @@
                         <div class="form-group form-group--inline">
                             <label>
                                 Uwagi dla kuriera
-                                <textarea name="pickUpComment" rows="5"></textarea>
+                                <textarea id = pickUpComment name="pickUpComment" rows="5"></textarea>
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group--buttons">
                     <button type="button" class="btn prev-step">Wstecz</button>
-                    <button type="button" class="btn next-step">Dalej</button>
+                    <button id="toSummary" type="button" class="btn next-step">Dalej</button>
                 </div>
             </div>
 
@@ -222,14 +223,14 @@
                         <ul>
                             <li>
                                 <span class="icon icon-bag"></span>
-                                <span class="summary--text"
+                                <span class="summary--text" id="numberCategories"
                                 >4 worki ubrań w dobrym stanie dla dzieci</span
                                 >
                             </li>
 
                             <li>
                                 <span class="icon icon-hand"></span>
-                                <span class="summary--text"
+                                <span class="summary--text" id="forFundation"
                                 >Dla fundacji "Mam marzenie" w Warszawie</span
                                 >
                             </li>
@@ -239,20 +240,20 @@
                     <div class="form-section form-section--columns">
                         <div class="form-section--column">
                             <h4>Adres odbioru:</h4>
-                            <ul>
-                                <li>Prosta 51</li>
-                                <li>Warszawa</li>
-                                <li>99-098</li>
-                                <li>123 456 789</li>
+                            <ul id="addressUl">
+<%--                                <li>Prosta 51</li>--%>
+<%--                                <li>Warszawa</li>--%>
+<%--                                <li>99-098</li>--%>
+<%--                                <li>123 456 789</li>--%>
                             </ul>
                         </div>
 
                         <div class="form-section--column">
                             <h4>Termin odbioru:</h4>
-                            <ul>
-                                <li>13/12/2018</li>
-                                <li>15:40</li>
-                                <li>Brak uwag</li>
+                            <ul id="termUl">
+<%--                                <li>13/12/2018</li>--%>
+<%--                                <li>15:40</li>--%>
+<%--                                <li>Brak uwag</li>--%>
                             </ul>
                         </div>
                     </div>
