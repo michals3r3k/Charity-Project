@@ -19,10 +19,16 @@
     <h2>Załóż konto</h2>
     <form:form modelAttribute="user">
         <div class="form-group">
+            <form:input path="firstName" placeholder="Imię"/>
+        </div>
+        <div class="form-group">
+            <form:input path="lastName" placeholder="Nazwisko"/>
+        </div>
+        <div class="form-group">
             <form:input path="email" placeholder="Email"/>
         </div>
         <div class="form-group">
-            <form:input path="password" placeholder="Hasło"/>
+            <form:input path="password" placeholder="Hasło" type="password"/>
         </div>
         <div class="form-group form-group--buttons">
             <a href="/login" class="btn btn--without-border">Zaloguj się</a>
