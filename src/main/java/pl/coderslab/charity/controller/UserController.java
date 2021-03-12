@@ -17,18 +17,18 @@ public class UserController {
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
     public String login() {
-        return "login";
+        return "admin/login";
     }
 
     @GetMapping("/register")
     public String registerGet(Model model){
         model.addAttribute("user", new User());
-        return "register";
+        return "admin/register";
     }
 
     @PostMapping("/register")
     public String registerPost(User user){
         userService.save(user);
-        return "redirect:/login";
+        return "admin/login";
     }
 }

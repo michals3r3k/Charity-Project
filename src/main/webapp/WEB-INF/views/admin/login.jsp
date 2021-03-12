@@ -12,7 +12,7 @@
 </head>
 <body>
 <header>
-    <%@include file="header.jsp"%>
+    <%@include file="../header.jsp"%>
 </header>
 
 <section class="login-page">
@@ -33,6 +33,6 @@
     </form>
 </section>
 
-<%@include file="footer.jsp"%>
+<%@include file="../footer.jsp"%>
 </body>
 </html>
