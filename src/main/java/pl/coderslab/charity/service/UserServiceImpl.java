@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         user.setEnabled(true);
-        user.setUserName();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(roleService.findByRoleType(RoleType.ROLE_USER)));
         userRepository.save(user);

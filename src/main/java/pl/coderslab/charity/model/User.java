@@ -17,15 +17,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
-    private String username;
     private String password;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Role> roles;
     @OneToMany
     private List<Donation> donations;
     private boolean enabled;
-
-    public void setUserName() {
-        this.username = this.email;
-    }
 }
