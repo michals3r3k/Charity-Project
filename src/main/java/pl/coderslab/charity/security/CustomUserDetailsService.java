@@ -6,9 +6,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import pl.coderslab.charity.model.Role;
 import pl.coderslab.charity.model.User;
 import pl.coderslab.charity.service.UserService;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,20 +23,18 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userService.findByEmail(s);
-        if(user == null){
-            throw new UsernameNotFoundException(String.format("%s does not exists", s));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
         }
 
-        Set<GrantedAuthority> authorities = user
-                .getRoles()
+        Set<GrantedAuthority> authorities = user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleType().toString()))
                 .collect(Collectors.toSet());
 
         return new org.springframework.security.core.userdetails
                 .User(user.getEmail(), user.getPassword(), authorities);
-
     }
 }
