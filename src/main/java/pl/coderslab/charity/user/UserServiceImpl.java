@@ -2,9 +2,11 @@ package pl.coderslab.charity.user;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.coderslab.charity.role.Role;
 import pl.coderslab.charity.role.RoleType;
 import pl.coderslab.charity.role.RoleService;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -20,10 +22,15 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<User> findAllByRoleType(RoleType roleType) {
+        Role role = roleService.findByRoleType(roleType);
+        return userRepository.findAllByRoleType(role);
     }
 
     @Override
@@ -31,6 +38,11 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(roleService.findByRoleType(RoleType.ROLE_USER)));
+        userRepository.save(user);
+    }
+
+    @Override
+    public void edit(User user) {
         userRepository.save(user);
     }
 

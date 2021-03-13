@@ -72,10 +72,43 @@
     <a href="/admin/institution/add" class="btn btn--large">Dodaj fundację</a>
 </section>
 <hr class="custom-hr">
-<section id="users" class="steps">
-    <h2>Lista użytkowników</h2>
+<section id="admins" class="steps">
+    <h2>Lista administratorów</h2>
+    <table class="custom-table">
+        <thead>
+        <tr class="custom-tr-dark">
+            <th class="custom-th">Id</th>
+            <th>Imię i Nazwisko</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Akcja</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach items="${admins}" var="admin">
+            <tr class="custom-tr">
+                <td class="custom-td">${admin.id}</td>
+                <td class="custom-td">${admin.firstName} ${admin.lastName}</td>
+                <td class="custom-td">${admin.email}</td>
+                <td class="custom-td">
+                        <c:forEach items="${admin.roles}" var="role">
+                            <c:if test='${role.roleType.toString().equals("ROLE_ADMIN")}'>
+                                ADMIN,
+                            </c:if>
+                            <c:if test='${role.roleType.toString().equals("ROLE_USER")}'>
+                                USER,
+                            </c:if>
+                        </c:forEach>
+                </td>
+                <td class="custom-td">
+                    <a href="/admin/admin/take-off-permissions/${admin.id}" class="btn btn--without-border">Zdejmij uprawnienia admina</a>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
 
-    <a href="#" class="btn btn--large">Dodaj użytkownika</a>
+    <a href="#" class="btn btn--large">####</a>
 </section>
 
 <%--<section id="steps" class="steps">--%>
