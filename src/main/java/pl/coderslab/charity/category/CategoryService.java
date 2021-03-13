@@ -1,6 +1,6 @@
-package pl.coderslab.charity.service;
+package pl.coderslab.charity.category;
 
-import pl.coderslab.charity.model.Category;
+import pl.coderslab.charity.category.Category;
 
 import java.util.List;
 

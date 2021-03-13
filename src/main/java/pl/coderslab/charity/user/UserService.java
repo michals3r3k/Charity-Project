@@ -1,6 +1,6 @@
-package pl.coderslab.charity.service;
+package pl.coderslab.charity.user;
 
-import pl.coderslab.charity.model.User;
+import pl.coderslab.charity.user.User;
 
 public interface UserService {
     User findByEmail(String email);

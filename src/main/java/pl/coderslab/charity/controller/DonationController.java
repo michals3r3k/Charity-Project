@@ -4,10 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.coderslab.charity.model.Donation;
-import pl.coderslab.charity.service.CategoryService;
-import pl.coderslab.charity.service.DonationService;
-import pl.coderslab.charity.service.InstitutionService;
+import pl.coderslab.charity.donation.Donation;
+import pl.coderslab.charity.category.CategoryService;
+import pl.coderslab.charity.donation.DonationService;
+import pl.coderslab.charity.institution.InstitutionService;
 
 @Controller
 public class DonationController {
@@ -21,7 +21,7 @@ public class DonationController {
         this.institutionService = institutionService;
     }
 
-    @GetMapping("/form")
+    @GetMapping("/donation")
     public String donationFormGet(Model model){
         model.addAttribute("donation", new Donation());
         model.addAttribute("categories", categoryService.findAll());
@@ -29,13 +29,13 @@ public class DonationController {
         return "donation/form";
     }
 
-    @PostMapping("/form")
+    @PostMapping("/donation")
     public String donationFormPost(Donation donation) {
         donationService.save(donation);
-        return "redirect:/form/confirm";
+        return "redirect:/donation/confirm";
     }
 
-    @GetMapping("/form/confirm")
+    @GetMapping("/donation/confirm")
     public String confirmDonation(){
         return "donation/formConfirm";
     }

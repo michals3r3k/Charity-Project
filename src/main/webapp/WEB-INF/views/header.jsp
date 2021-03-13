@@ -36,7 +36,7 @@
         <li><a href="#about" class="btn btn--without-border">O nas</a></li>
         <li><a href="#institutions" class="btn btn--without-border">Fundacje i organizacje</a></li>
         <sec:authorize access="isAuthenticated()">
-        <li><a href="/form" class="btn btn--without-border">Przekaż dary</a></li>
+        <li><a href="/donation" class="btn btn--without-border">Przekaż dary</a></li>
         </sec:authorize>
         <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
     </ul>

@@ -1,8 +1,10 @@
-package pl.coderslab.charity.model;
+package pl.coderslab.charity.donation;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.coderslab.charity.category.Category;
+import pl.coderslab.charity.institution.Institution;
 
 import javax.persistence.*;
 import java.time.LocalDate;

@@ -1,9 +1,6 @@
-package pl.coderslab.charity.service;
+package pl.coderslab.charity.role;
 
 import org.springframework.stereotype.Service;
-import pl.coderslab.charity.model.Role;
-import pl.coderslab.charity.model.RoleType;
-import pl.coderslab.charity.repository.RoleRepository;
 
 @Service
 public class RoleServiceImpl implements RoleService {

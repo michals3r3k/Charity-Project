@@ -3,8 +3,8 @@ package pl.coderslab.charity.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.charity.model.User;
-import pl.coderslab.charity.service.UserService;
+import pl.coderslab.charity.user.User;
+import pl.coderslab.charity.user.UserService;
 
 @Controller
 @RequestMapping("")

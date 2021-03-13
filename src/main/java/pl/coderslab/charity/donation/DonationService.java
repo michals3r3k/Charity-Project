@@ -1,6 +1,6 @@
-package pl.coderslab.charity.service;
+package pl.coderslab.charity.donation;
 
-import pl.coderslab.charity.model.Donation;
+import pl.coderslab.charity.donation.Donation;
 
 public interface DonationService {
     Long countSum();
