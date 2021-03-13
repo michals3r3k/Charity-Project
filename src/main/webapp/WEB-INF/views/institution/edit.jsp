@@ -2,7 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -19,24 +20,28 @@
     <div class="slogan container container--90">
         <div class="slogan--item">
             <h1>
-                Oddaj rzeczy, których już nie chcesz<br />
-                <span class="uppercase">potrzebującym</span>
+                Edytuj poszczególne fundacje<br />
+                <span class="uppercase">Fundacja "${institution.name}"</span>
             </h1>
         </div>
     </div>
 </header>
 <footer>
 <div class="contact" id="contact">
-    <h2>Edytuj </h2>
-    <h3>Formularz kontaktowy</h3>
-    <form class="form--contact">
-        <div class="form-group form-group--50"><input type="text" name="name" placeholder="Imię"/></div>
-        <div class="form-group form-group--50"><input type="text" name="surname" placeholder="Nazwisko"/></div>
+    <h2>Edytuj ${institution.name}</h2>
+    <h3>Formularz edycji</h3>
+    <form:form modelAttribute="institution" cssClass="form--contact" method="post" action="/admin/institution/edit">
+        <form:hidden path="id"/>
+<%--        <div class="form-group form-group--50"><input type="text" name="name" placeholder="Imię"/></div>--%>
+        <div class="form-group">
+            <form:input path="name"/>
+        </div>
+        <div class="form-group">
+            <form:textarea path="description"/>
+        </div>
 
-        <div class="form-group"><textarea name="message" placeholder="Wiadomość" rows="1"></textarea></div>
-
-        <button class="btn" type="submit">Wyślij</button>
-    </form>
+        <button class="btn" type="submit">Edytuj</button>
+    </form:form>
 </div>
 <div class="bottom-line">
     <span class="bottom-line--copy">Copyright &copy; 2018</span>
