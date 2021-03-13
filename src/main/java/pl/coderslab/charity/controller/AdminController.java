@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.coderslab.charity.donation.DonationService;
 import pl.coderslab.charity.institution.Institution;
 import pl.coderslab.charity.institution.InstitutionService;
 
@@ -13,14 +14,20 @@ import pl.coderslab.charity.institution.InstitutionService;
 @RequestMapping("/admin")
 public class AdminController {
     private final InstitutionService institutionService;
+    private final DonationService donationService;
 
-    public AdminController(InstitutionService institutionService) {
+    public AdminController(InstitutionService institutionService, DonationService donationService) {
         this.institutionService = institutionService;
+        this.donationService = donationService;
     }
 
     @GetMapping("")
     public String adminPanel(Model model){
+        model.addAttribute("countBags", donationService.countSum());
+        model.addAttribute("countDonations", donationService.countAll());
+
         model.addAttribute("institutions", institutionService.findAll());
+
         return "admin/panel";
     }
 
@@ -35,7 +42,7 @@ public class AdminController {
     @PostMapping("/institution/edit")
     public String institutionEditPost(Institution institution){
         institutionService.save(institution);
-        return "redirect:/admin";
+        return "redirect:/admin#institutions";
     }
 
 //INSTITUTION ADD
@@ -48,7 +55,15 @@ public class AdminController {
     @PostMapping("/institution/add")
     public String institutionAddPost(Institution institution){
         institutionService.save(institution);
-        return "redirect:/admin";
+        return "redirect:/admin#institutions";
+    }
+
+//INSTITUTION DELETE
+    @GetMapping("/institution/delete/{id}")
+    public String institutionDeleteGet(@PathVariable Long id){
+        Institution institution = institutionService.findById(id);
+        institutionService.delete(institution);
+        return "redirect:/admin#institutions";
     }
 
 }

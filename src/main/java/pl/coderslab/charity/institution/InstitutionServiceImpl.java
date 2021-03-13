@@ -21,6 +21,11 @@ public class InstitutionServiceImpl implements InstitutionService{
     }
 
     @Override
+    public void delete(Institution institution) {
+        institutionRepository.delete(institution);
+    }
+
+    @Override
     public void save(Institution institution) {
         institutionRepository.save(institution);
     }

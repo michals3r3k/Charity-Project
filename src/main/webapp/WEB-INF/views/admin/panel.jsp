@@ -28,13 +28,13 @@
 <section id="stats" class="stats">
     <div class="container container--85">
         <div class="stats--item">
-            <em>10</em>
+            <em>${countBags}</em>
             <h3>Oddanych worków</h3>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius est beatae, quod accusamus illum tempora!</p>
         </div>
 
         <div class="stats--item">
-            <em>5</em>
+            <em>${countDonations}</em>
             <h3>Przekazanych darów</h3>
             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam magnam, sint nihil cupiditate quas quam.</p>
         </div>
@@ -45,7 +45,6 @@
 <section id="institutions" class="steps">
     <h2>Lista fundacji</h2>
 
-<%--    <div class="steps--container">--%>
         <table class="custom-table">
             <thead>
                 <tr class="custom-tr-dark">
@@ -69,15 +68,12 @@
             </c:forEach>
             </tbody>
         </table>
-<%--    </div>--%>
 
     <a href="/admin/institution/add" class="btn btn--large">Dodaj fundację</a>
 </section>
-
+<hr class="custom-hr">
 <section id="users" class="steps">
     <h2>Lista użytkowników</h2>
-    <div class="steps--container">
-    </div>
 
     <a href="#" class="btn btn--large">Dodaj użytkownika</a>
 </section>
