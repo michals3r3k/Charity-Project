@@ -24,6 +24,7 @@ public class AdminController {
         return "admin/panel";
     }
 
+//INSTITUTION EDIT
     @GetMapping("/institution/edit/{id}")
     public String institutionEditGet(@PathVariable Long id, Model model){
         Institution institution = institutionService.findById(id);
@@ -33,6 +34,19 @@ public class AdminController {
 
     @PostMapping("/institution/edit")
     public String institutionEditPost(Institution institution){
+        institutionService.save(institution);
+        return "redirect:/admin";
+    }
+
+//INSTITUTION ADD
+    @GetMapping("/institution/add")
+    public String institutionAddGet(Model model){
+        model.addAttribute("institution", new Institution());
+        return "institution/add";
+    }
+
+    @PostMapping("/institution/add")
+    public String institutionAddPost(Institution institution){
         institutionService.save(institution);
         return "redirect:/admin";
     }
