@@ -15,6 +15,7 @@ import pl.coderslab.charity.role.RoleType;
 import pl.coderslab.charity.user.User;
 import pl.coderslab.charity.user.UserService;
 
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -39,6 +40,7 @@ public class AdminController {
 
         model.addAttribute("institutions", institutionService.findAll());
         model.addAttribute("admins", userService.findAllByRoleType(RoleType.ROLE_ADMIN));
+        model.addAttribute("users", userService.findAll());
 
         return "admin/panel";
     }
@@ -94,6 +96,27 @@ public class AdminController {
         userService.edit(user);
 
         return "redirect:/admin#admins";
+    }
+
+//---------------------------------------------
+//USER EDIT
+    @GetMapping("/user/edit/{id}")
+    public String editUserGet(@PathVariable Long id, Model model){
+        model.addAttribute("user", userService.findById(id));
+        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("enables", List.of(true, false));
+        return "user/edit";
+    }
+
+    @PostMapping("/user/edit")
+    public String editUserPost(User user){
+        User userFromDB = userService.findById(user.getId());
+        user.setPassword(userFromDB.getPassword());
+        user.setDonations(userFromDB.getDonations());
+        user.setEnabled(userFromDB.isEnabled());
+
+        userService.edit(user);
+        return "redirect:/admin#users";
     }
 
 }
