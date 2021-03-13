@@ -150,6 +150,9 @@
                     <c:if test="${user.enabled}">
                     <a href="/admin/user/switch-enable/${user.id}" class="btn btn--without-border">Zablokuj</a>
                     </c:if>
+                    <c:if test="${!user.enabled}">
+                        <a href="/admin/user/switch-enable/${user.id}" class="btn btn--without-border">Odblokuj</a>
+                    </c:if>
                 </td>
             </tr>
         </c:forEach>

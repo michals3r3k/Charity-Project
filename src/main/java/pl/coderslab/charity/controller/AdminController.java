@@ -101,7 +101,7 @@ public class AdminController {
 //---------------------------------------------
 //USER EDIT
     @GetMapping("/user/edit/{id}")
-    public String editUserGet(@PathVariable Long id, Model model){
+    public String userEditGet(@PathVariable Long id, Model model){
         model.addAttribute("user", userService.findById(id));
         model.addAttribute("roles", roleService.findAll());
         model.addAttribute("enables", List.of(true, false));
@@ -109,14 +109,31 @@ public class AdminController {
     }
 
     @PostMapping("/user/edit")
-    public String editUserPost(User user){
+    public String userEditPost(User user){
         User userFromDB = userService.findById(user.getId());
         user.setPassword(userFromDB.getPassword());
-        user.setDonations(userFromDB.getDonations());
         user.setEnabled(userFromDB.isEnabled());
 
         userService.edit(user);
         return "redirect:/admin#users";
     }
+
+//USER LOCK/UNLOCK
+    @GetMapping("/user/switch-enable/{id}")
+    public String switchEnableGet(@PathVariable Long id){
+        User user = userService.findById(id);
+        user.setEnabled(!user.isEnabled());
+        userService.edit(user);
+        return "redirect:/admin#users";
+    }
+
+//USER DELETE
+    @GetMapping("/user/delete/{id}")
+    public String userDeleteGet(@PathVariable Long id){
+        User user = userService.findById(id);
+        userService.delete(user);
+        return "redirect:/admin#users";
+    }
+
 
 }

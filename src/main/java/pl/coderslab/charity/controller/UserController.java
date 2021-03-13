@@ -29,6 +29,6 @@ public class UserController {
     @PostMapping("/register")
     public String registerPost(User user){
         userService.save(user);
-        return "admin/login";
+        return "redirect:/login";
     }
 }
