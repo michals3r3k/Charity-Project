@@ -1,5 +1,6 @@
 package pl.coderslab.charity.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.charity.token.ConfirmationToken;
+import pl.coderslab.charity.token.ConfirmationTokenService;
 import pl.coderslab.charity.user.User;
 import pl.coderslab.charity.user.UserService;
 import pl.coderslab.charity.utils.PasswordUtils;
@@ -16,21 +19,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("")
 public class UserController {
     private final UserService userService;
     private final PasswordUtils passwordUtils;
-
-    public UserController(UserService userService, PasswordUtils passwordUtils) {
-        this.userService = userService;
-        this.passwordUtils = passwordUtils;
-    }
+    private final ConfirmationTokenService confirmationTokenService;
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
     public String login() {
         return "admin/login";
     }
 
+//REGISTER NEW ACCOUNT
     @GetMapping("/register")
     public String registerGet(Model model) {
         model.addAttribute("user", new User());
@@ -41,6 +42,17 @@ public class UserController {
     public String registerPost(User user) {
         userService.save(user);
         return "redirect:/login";
+    }
+
+//CONFIRMATION FROM EMAIL
+    @GetMapping("/register/confirm")
+    public String registerConfirmGet(@RequestParam String token){
+        ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
+        User user = confirmationToken.getUser();
+        user.setEnabled(true);
+        userService.edit(user);
+        confirmationTokenService.delete(confirmationToken);
+        return "user/activation";
     }
 
     //PROFILE EDIT

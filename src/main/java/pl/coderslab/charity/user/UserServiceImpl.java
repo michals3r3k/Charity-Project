@@ -1,26 +1,29 @@
 package pl.coderslab.charity.user;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.charity.role.Role;
 import pl.coderslab.charity.role.RoleType;
 import pl.coderslab.charity.role.RoleService;
+import pl.coderslab.charity.security.email.EmailService;
+import pl.coderslab.charity.token.ConfirmationToken;
+import pl.coderslab.charity.token.ConfirmationTokenService;
 
+import javax.validation.constraints.Email;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleService roleService;
-
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, RoleService roleService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleService = roleService;
-    }
-
+    private final ConfirmationTokenService tokenService;
+    private final EmailService emailService;
 
     @Override
     public User findByEmail(String email) {
@@ -35,10 +38,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
-        user.setEnabled(true);
+        user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(roleService.findByRoleType(RoleType.ROLE_USER)));
+
+        ConfirmationToken token = new ConfirmationToken();
+        token.setUser(user);
+        token.setToken(UUID.randomUUID().toString());
+
         userRepository.save(user);
+        tokenService.save(token);
+        //todo:send email
+        emailService.send(
+                user.getEmail(),
+                "Charity.com: Aktywacja konta",
+                buildEmail(
+                        user.getFirstName(),
+                        "http://localhost:8080/register/confirm?token="+token.getToken()
+                )
+        );
+
     }
 
     @Override
@@ -66,5 +85,9 @@ public class UserServiceImpl implements UserService {
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException(String.format("User with id=%s does not exists", id)));
+    }
+
+    private String buildEmail(String name, String link) {
+        return String.format("Cześć %s, kliknij w ten link aby aktywować swoje konto %s", name, link);
     }
 }
