@@ -2,12 +2,9 @@ package pl.coderslab.charity.user;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
-import pl.coderslab.charity.donation.Donation;
 import pl.coderslab.charity.role.Role;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor

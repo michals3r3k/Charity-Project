@@ -1,5 +1,6 @@
 package pl.coderslab.charity.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,24 +9,28 @@ import pl.coderslab.charity.donation.Donation;
 import pl.coderslab.charity.category.CategoryService;
 import pl.coderslab.charity.donation.DonationService;
 import pl.coderslab.charity.institution.InstitutionService;
+import pl.coderslab.charity.user.UserService;
 
 @Controller
 public class DonationController {
     private final DonationService donationService;
     private final CategoryService categoryService;
     private final InstitutionService institutionService;
+    private final UserService userService;
 
-    public DonationController(DonationService donationService, CategoryService categoryService, InstitutionService institutionService) {
+    public DonationController(DonationService donationService, CategoryService categoryService, InstitutionService institutionService, UserService userService) {
         this.donationService = donationService;
         this.categoryService = categoryService;
         this.institutionService = institutionService;
+        this.userService = userService;
     }
 
     @GetMapping("/donation")
-    public String donationFormGet(Model model){
+    public String donationFormGet(Model model, Authentication auth){
         model.addAttribute("donation", new Donation());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("institutions", institutionService.findAll());
+        model.addAttribute("currentUser", userService.findByEmail(auth.getName()));
         return "donation/form";
     }
 
