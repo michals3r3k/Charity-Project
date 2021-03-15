@@ -41,7 +41,7 @@ public class UserController {
     @PostMapping("/register")
     public String registerPost(User user) {
         userService.save(user);
-        return "redirect:/login";
+        return "admin/emailSent";
     }
 
 //CONFIRMATION FROM EMAIL
@@ -92,9 +92,9 @@ public class UserController {
     @PostMapping("/profile/{userId}/change-pass")
     public String userChangePassPost(
             @PathVariable Long userId,
-            @RequestParam(name = "oldPassword") String oldPassword,
-            @RequestParam(name = "newPassword") String newPassword,
-            @RequestParam(name = "confirmPassword") String confirmPassword,
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
             Model model
     ) {
         User user = userService.findById(userId);
