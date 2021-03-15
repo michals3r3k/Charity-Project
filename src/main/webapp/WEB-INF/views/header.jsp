@@ -45,12 +45,12 @@
         <sec:authorize access="hasRole('ADMIN')">
         <li><a href="/admin" class="btn btn--without-border active">Admin Panel</a></li>
         </sec:authorize>
-        <li><a href="#steps" class="btn btn--without-border">O co chodzi?</a></li>
-        <li><a href="#about" class="btn btn--without-border">O nas</a></li>
-        <li><a href="#institutions" class="btn btn--without-border">Fundacje i organizacje</a></li>
+        <li><a href="/#steps" class="btn btn--without-border">O co chodzi?</a></li>
+        <li><a href="/#about" class="btn btn--without-border">O nas</a></li>
+        <li><a href="/#institutions" class="btn btn--without-border">Fundacje i organizacje</a></li>
         <sec:authorize access="isAuthenticated()">
         <li><a href="/donation" class="btn btn--without-border">Przekaż dary</a></li>
         </sec:authorize>
-        <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
+        <li><a href="/#contact" class="btn btn--without-border">Kontakt</a></li>
     </ul>
 </nav>

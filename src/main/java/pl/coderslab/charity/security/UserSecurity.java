@@ -17,4 +17,8 @@ public class UserSecurity {
         User user = userService.findById(id);
         return auth.getName().equals(user.getEmail());
     }
+
+    public boolean isEnabled(Authentication authentication){
+        return userService.findByEmail(authentication.getName()).isEnabled();
+    }
 }

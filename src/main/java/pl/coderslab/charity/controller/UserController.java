@@ -32,47 +32,47 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String registerGet(Model model){
+    public String registerGet(Model model) {
         model.addAttribute("user", new User());
         return "admin/register";
     }
 
     @PostMapping("/register")
-    public String registerPost(User user){
+    public String registerPost(User user) {
         userService.save(user);
         return "redirect:/login";
     }
 
-//PROFILE EDIT
+    //PROFILE EDIT
     @GetMapping("/profile/{userId}/edit")
-    public String userEditGet(@PathVariable Long userId, Model model){
+    public String userEditGet(@PathVariable Long userId, Model model) {
         model.addAttribute("user", userService.findById(userId));
         return "profile/edit";
     }
 
     @PostMapping("/profile/{userId}/edit")
-    public String userEditPost(@PathVariable Long userId, User user){
+    public String userEditPost(@PathVariable Long userId, User user) {
         User userFromDB = userService.findById(userId);
         userFromDB.setFirstName(user.getFirstName());
         userFromDB.setLastName(user.getLastName());
         userFromDB.setEmail(user.getEmail());
         userService.edit(userFromDB);
-    
+
         Set<GrantedAuthority> authorities = userFromDB
                 .getRoles()
                 .stream()
-                .map(r-> new SimpleGrantedAuthority(r.getRoleType().toString()))
+                .map(r -> new SimpleGrantedAuthority(r.getRoleType().toString()))
                 .collect(Collectors.toSet());
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userFromDB.getEmail(), userFromDB.getPassword(), authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "redirect:/profile/"+userId+"/edit";
+        return "redirect:/profile/" + userId + "/edit";
     }
 
-//PROFILE CHANGE PASSWORD
+    //PROFILE CHANGE PASSWORD
     @GetMapping("/profile/{userId}/change-pass")
-    public String userChangePassGet(@PathVariable Long userId, Model model){
+    public String userChangePassGet(@PathVariable Long userId, Model model) {
         model.addAttribute("user", userService.findById(userId));
         return "profile/changePasswd";
     }
@@ -86,11 +86,11 @@ public class UserController {
             Model model
     ) {
         User user = userService.findById(userId);
-        if(passwordUtils.checkOldPassword(user, oldPassword) && passwordUtils.isPasswordMatches(newPassword, confirmPassword)) {
+        if (passwordUtils.checkOldPassword(user, oldPassword) && passwordUtils.isPasswordMatches(newPassword, confirmPassword)) {
             user.setPassword(newPassword);
             userService.saveUserPassword(user);
             return "redirect:/";
-        }else {
+        } else {
             model.addAttribute("user", user);
             return "profile/changePasswdFail";
         }
