@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import pl.coderslab.charity.model.RoleType;
+import pl.coderslab.charity.role.RoleType;
 
 @Configuration
 @EnableWebSecurity
@@ -22,12 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/form/**").authenticated()
                 .antMatchers("/admin/**").hasAuthority(RoleType.ROLE_ADMIN.toString())
+                .antMatchers("/profile/{userId}/**").access("hasRole('ADMIN') or @userSecurity.isCurrentUser(authentication, #userId)")
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
                     .loginPage("/login")
                     .permitAll()
-                    .defaultSuccessUrl("/form")
+                    .defaultSuccessUrl("/donation")
                 .and()
                 .logout().logoutSuccessUrl("/login").permitAll();
     }

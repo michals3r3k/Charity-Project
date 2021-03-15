@@ -6,11 +6,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pl.coderslab.charity.model.Role;
-import pl.coderslab.charity.model.User;
-import pl.coderslab.charity.service.UserService;
+import pl.coderslab.charity.user.User;
+import pl.coderslab.charity.user.UserService;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 

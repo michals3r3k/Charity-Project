@@ -1,6 +1,6 @@
 <%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
-<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%@ page import="org.springframework.web.context.WebApplicationContext" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%@ page import="pl.coderslab.charity.user.UserService" %>
 <%@ page import="pl.coderslab.charity.user.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -14,11 +14,9 @@
         User user = userService.findByEmail(email);
         pageContext.setAttribute("currentUser", user);
     %>
-    <sec:authorize access="isAuthenticated()">
     <ul class="nav--actions">
         <li class="logged-user">
-            Witaj ${currentUser.firstName} ${currentUser.lastName}
-<%--            Witaj <sec:authentication property="principal.username"/>--%>
+            Witaj Admin: ${currentUser.firstName} ${currentUser.lastName}
             <ul class="dropdown">
                 <li><a href="/profile/${currentUser.id}/edit">Profil</a></li>
                 <li><a href="#">Moje zbiórki</a></li>
@@ -31,26 +29,12 @@
             </ul>
         </li>
     </ul>
-    </sec:authorize>
 
-    <sec:authorize access="!isAuthenticated()">
-    <ul class="nav--actions">
-        <li><a href="/login" class="btn btn--small btn--without-border">Zaloguj</a></li>
-        <li><a href="/register" class="btn btn--small btn--highlighted">Załóż konto</a></li>
-    </ul>
-    </sec:authorize>
 
     <ul>
-        <li><a href="/" class="btn btn--without-border active">Start</a></li>
-        <sec:authorize access="hasRole('ADMIN')">
-        <li><a href="/admin" class="btn btn--without-border active">Admin Panel</a></li>
-        </sec:authorize>
-        <li><a href="#steps" class="btn btn--without-border">O co chodzi?</a></li>
-        <li><a href="#about" class="btn btn--without-border">O nas</a></li>
-        <li><a href="#institutions" class="btn btn--without-border">Fundacje i organizacje</a></li>
-        <sec:authorize access="isAuthenticated()">
-        <li><a href="/donation" class="btn btn--without-border">Przekaż dary</a></li>
-        </sec:authorize>
-        <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
+        <li><a href="/" class="btn btn--without-border active">Strona Główna</a></li>
+        <li><a href="/admin#institutions" class="btn btn--without-border">Fundacje</a></li>
+        <li><a href="/admin#admins" class="btn btn--without-border">Administratorzy</a></li>
+        <li><a href="/admin#users" class="btn btn--without-border">Użytkownicy</a></li>
     </ul>
 </nav>
