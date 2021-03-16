@@ -13,12 +13,12 @@ public class UserSecurity {
         this.userService = userService;
     }
 
-    public boolean isCurrentUser(Authentication auth, Long id){
+    public boolean isCurrentUser(Authentication auth, Long id) {
         User user = userService.findById(id);
         return auth.getName().equals(user.getEmail());
     }
 
-    public boolean isEnabled(Authentication authentication){
+    public boolean isEnabled(Authentication authentication) {
         return userService.findByEmail(authentication.getName()).isEnabled();
     }
 }

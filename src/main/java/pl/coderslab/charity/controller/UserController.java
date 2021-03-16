@@ -31,7 +31,7 @@ public class UserController {
         return "admin/login";
     }
 
-//REGISTER NEW ACCOUNT
+    //REGISTER NEW ACCOUNT
     @GetMapping("/register")
     public String registerGet(Model model) {
         model.addAttribute("user", new User());
@@ -44,9 +44,9 @@ public class UserController {
         return "admin/emailSent";
     }
 
-//CONFIRMATION FROM EMAIL
+    //CONFIRMATION FROM EMAIL
     @GetMapping("/register/confirm")
-    public String registerConfirmGet(@RequestParam String token){
+    public String registerConfirmGet(@RequestParam String token) {
         ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
         User user = confirmationToken.getUser();
         user.setEnabled(true);
@@ -110,14 +110,14 @@ public class UserController {
 
     //FORGOT PASSWORD
     @GetMapping("/register/forgot-pass")
-    public String enterMailGet(){
+    public String enterMailGet() {
         return "user/forgotPassSetEmail";
     }
 
     @PostMapping("/register/forgot-pass")
     public String enterMailPost(@RequestParam String email) {
         User user = userService.findByEmail(email);
-        if(user==null){
+        if (user == null) {
             return "user/emailNotFound";
         }
         userService.forgotPass(user);
@@ -126,7 +126,7 @@ public class UserController {
 
     //FORGOT SET NEW PASSWORD
     @GetMapping("/register/forgot-pass/set-new")
-    public String setNewPassGet(@RequestParam String token, Model model){
+    public String setNewPassGet(@RequestParam String token, Model model) {
         model.addAttribute("token", token);
         return "user/forgotPassSetNewPass";
     }
@@ -137,23 +137,22 @@ public class UserController {
             @RequestParam String newPassword,
             @RequestParam String confirmPassword,
             Model model
-    ){
+    ) {
         ConfirmationToken confirmationToken;
 
         try {
             confirmationToken = confirmationTokenService.findByToken(token);
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             return "user/notValidToken";
         }
 
-        if(newPassword.equals(confirmPassword)){
+        if (newPassword.equals(confirmPassword)) {
             User user = confirmationToken.getUser();
             user.setPassword(newPassword);
             userService.saveUserPassword(user);
             confirmationTokenService.delete(confirmationToken);
             return "user/passwordChanged";
-        }
-        else {
+        } else {
             model.addAttribute("token", token);
             return "user/forgotPassSetNewPassFail";
         }

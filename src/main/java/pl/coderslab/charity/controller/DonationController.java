@@ -26,7 +26,7 @@ public class DonationController {
     }
 
     @GetMapping("/donation")
-    public String donationFormGet(Model model, Authentication auth){
+    public String donationFormGet(Model model, Authentication auth) {
         model.addAttribute("donation", new Donation());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("institutions", institutionService.findAll());
@@ -41,7 +41,7 @@ public class DonationController {
     }
 
     @GetMapping("/donation/confirm")
-    public String confirmDonation(){
+    public String confirmDonation() {
         return "donation/formConfirm";
     }
 

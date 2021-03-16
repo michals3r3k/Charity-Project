@@ -29,7 +29,7 @@ public class EmailService implements EmailSender {
             helper.setText(text, true);
             helper.setSubject(subject);
             mailSender.send(message);
-        }catch (MessagingException e){
+        } catch (MessagingException e) {
             LOGGER.error("Failed to send email", e);
             throw new IllegalStateException("Failed to send email");
         }

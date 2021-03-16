@@ -20,6 +20,6 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
     @Override
     public ConfirmationToken findByToken(String token) {
-        return tokenRepository.findByToken(token).orElseThrow(()-> new IllegalStateException("Token not found"));
+        return tokenRepository.findByToken(token).orElseThrow(() -> new IllegalStateException("Token not found"));
     }
 }

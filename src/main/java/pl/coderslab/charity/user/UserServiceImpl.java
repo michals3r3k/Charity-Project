@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
                 "Charity.com: Aktywacja konta",
                 buildEmailVerify(
                         user.getFirstName(),
-                        "http://localhost:8080/register/confirm?token="+token.getToken()
+                        "http://localhost:8080/register/confirm?token=" + token.getToken()
                 )
         );
 
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
                 "Charity.com: Zapomniane hasło",
                 buildEmailForgotPass(
                         user.getFirstName(),
-                        "http://localhost:8080/register/forgot-pass/set-new?token="+token.getToken()
+                        "http://localhost:8080/register/forgot-pass/set-new?token=" + token.getToken()
                 )
         );
     }
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException(String.format("User with id=%s does not exists", id)));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("User with id=%s does not exists", id)));
     }
 
     private String buildEmailVerify(String name, String link) {

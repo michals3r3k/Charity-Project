@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class InstitutionServiceImpl implements InstitutionService{
+public class InstitutionServiceImpl implements InstitutionService {
     private final InstitutionRepository institutionRepository;
 
     public InstitutionServiceImpl(InstitutionRepository institutionRepository) {
@@ -15,8 +15,8 @@ public class InstitutionServiceImpl implements InstitutionService{
     @Override
     public Institution findById(Long id) {
         return institutionRepository.findById(id)
-                .orElseThrow(()->
-                    new IllegalArgumentException(String.format("Institution with id=%s does not exists", id))
+                .orElseThrow(() ->
+                        new IllegalArgumentException(String.format("Institution with id=%s does not exists", id))
                 );
     }
 
