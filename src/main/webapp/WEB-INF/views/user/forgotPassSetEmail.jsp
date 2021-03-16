@@ -16,21 +16,18 @@
 </header>
 
 <section class="login-page">
-    <h2>Zaloguj się</h2>
-    <form method="post">
+    <h2>Zaponiałem hasła</h2>
+    <form:form method="post">
         <div class="form-group">
-            <input type="email" name="username" placeholder="Email" />
-        </div>
-        <div class="form-group">
-            <input type="password" name="password" placeholder="Hasło" />
-            <a href="/register/forgot-pass" class="btn btn--small btn--without-border reset-password">Przypomnij hasło</a>
+            <input type="email" name="email" placeholder="Email" />
         </div>
         <div class="form-group form-group--buttons">
+            <input type="submit" class="btn" value="Przypomnij"/>
+            <a href="/login" class="btn btn--without-border">Zaloguj się</a>
             <a href="/register" class="btn btn--without-border">Załóż konto</a>
-            <input type="submit" class="btn" value="Zaloguj się"/>
         </div>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    </form>
+    </form:form>
 </section>
 
 <%@include file="../footer.jsp"%>

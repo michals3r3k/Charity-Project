@@ -11,6 +11,7 @@ public interface UserService {
     void save(User user);
     void delete(User user);
     void edit(User user);
+    void forgotPass(User user);
     User findById(Long id);
     List<User> findAllByRoleType(RoleType roleType);
 }

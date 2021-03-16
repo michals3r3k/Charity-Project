@@ -18,5 +18,8 @@ public class ConfirmationToken {
     private LocalDateTime confirmedAt;
     @ManyToOne
     private User user;
+    @Enumerated(EnumType.STRING)
+    private TokenType tokenType;
+    private boolean used;
 
 }

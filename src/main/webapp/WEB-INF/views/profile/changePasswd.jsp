@@ -49,7 +49,7 @@
             </div>
 
             <div class="form-group form-group--50">
-                <button class="btn" type="submit">Zmień hasło</button>
+                <button id="submit-btn" class="btn" type="submit">Zmień hasło</button>
             </div>
 
             <div class="form-group form-group--50">
