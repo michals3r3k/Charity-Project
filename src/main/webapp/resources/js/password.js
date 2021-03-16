@@ -1,10 +1,12 @@
-const btn = document.querySelector('button[type="submit"]');
+const btn = document.querySelector('#submit-btn');
 const error = document.querySelector("#error");
+
+console.log(btn)
 
 setTimeout(()=>{
     error.classList.add("hidden");
-    const h3 = error.querySelector("h3");
-    h3.innerText="Hasła nie pasują do siebie!";
+    const firstChild = error.firstChild;
+    firstChild.innerText="Hasła nie pasują do siebie!";
 },3000)
 
 btn.addEventListener("click", e=>{

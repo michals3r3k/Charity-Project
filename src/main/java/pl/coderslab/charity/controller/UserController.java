@@ -107,4 +107,55 @@ public class UserController {
             return "profile/changePasswdFail";
         }
     }
+
+    //FORGOT PASSWORD
+    @GetMapping("/register/forgot-pass")
+    public String enterMailGet(){
+        return "user/forgotPassSetEmail";
+    }
+
+    @PostMapping("/register/forgot-pass")
+    public String enterMailPost(@RequestParam String email) {
+        User user = userService.findByEmail(email);
+        if(user==null){
+            return "user/emailNotFound";
+        }
+        userService.forgotPass(user);
+        return "user/newPassMailSent";
+    }
+
+    //FORGOT SET NEW PASSWORD
+    @GetMapping("/register/forgot-pass/set-new")
+    public String setNewPassGet(@RequestParam String token, Model model){
+        model.addAttribute("token", token);
+        return "user/forgotPassSetNewPass";
+    }
+
+    @PostMapping("/register/forgot-pass/set-new")
+    public String setNewPassPost(
+            @RequestParam String token,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            Model model
+    ){
+        ConfirmationToken confirmationToken;
+
+        try {
+            confirmationToken = confirmationTokenService.findByToken(token);
+        }catch (IllegalStateException e){
+            return "user/notValidToken";
+        }
+
+        if(newPassword.equals(confirmPassword)){
+            User user = confirmationToken.getUser();
+            user.setPassword(newPassword);
+            userService.saveUserPassword(user);
+            confirmationTokenService.delete(confirmationToken);
+            return "user/passwordChanged";
+        }
+        else {
+            model.addAttribute("token", token);
+            return "user/forgotPassSetNewPassFail";
+        }
+    }
 }
