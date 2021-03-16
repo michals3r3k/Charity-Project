@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/form/**").authenticated()
+                .antMatchers("/donation/**").access("@userSecurity.isEnabled(authentication)")
                 .antMatchers("/admin/**").hasAuthority(RoleType.ROLE_ADMIN.toString())
                 .antMatchers("/profile/{userId}/**").access("hasRole('ADMIN') or @userSecurity.isCurrentUser(authentication, #userId)")
                 .anyRequest().permitAll()
@@ -28,8 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                     .loginPage("/login")
                     .permitAll()
-                    .defaultSuccessUrl("/donation")
+                    .defaultSuccessUrl("/")
                 .and()
-                .logout().logoutSuccessUrl("/login").permitAll();
+                .logout().logoutSuccessUrl("/login").permitAll()
+                .and().exceptionHandling().accessDeniedPage("/403");;
     }
 }
