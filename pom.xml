@@ -11,11 +11,12 @@
     <groupId>pl.coderslab</groupId>
     <artifactId>charity</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>charity</name>
     <description>Charity project, created with love in CodersLab</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
@@ -72,7 +73,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+            <version>9.4-1201-jdbc4</version>
         </dependency>
     </dependencies>
 
@@ -82,14 +83,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

@@ -8,6 +8,8 @@ public class CharityApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CharityApplication.class, args);
+        System.setProperty("java.runtime.version", "11");
+
     }
 
 }
