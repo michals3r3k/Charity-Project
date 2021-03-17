@@ -16,6 +16,7 @@ import pl.coderslab.charity.role.RoleType;
 import pl.coderslab.charity.user.User;
 import pl.coderslab.charity.user.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -106,7 +107,10 @@ public class AdminController {
     public String userEditGet(@PathVariable Long id, Model model) {
         model.addAttribute("user", userService.findById(id));
         model.addAttribute("roles", roleService.findAll());
-        model.addAttribute("enables", List.of(true, false));
+        List<Boolean> bools = new ArrayList<>();
+        bools.add(true);
+        bools.add(false);
+        model.addAttribute("enables", bools);
         return "user/edit";
     }
 

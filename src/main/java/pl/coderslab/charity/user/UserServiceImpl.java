@@ -11,6 +11,7 @@ import pl.coderslab.charity.token.ConfirmationToken;
 import pl.coderslab.charity.token.ConfirmationTokenService;
 import pl.coderslab.charity.token.TokenType;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -39,7 +40,9 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Set.of(roleService.findByRoleType(RoleType.ROLE_USER)));
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleService.findByRoleType(RoleType.ROLE_USER));
+        user.setRoles(roles);
 
         ConfirmationToken token = new ConfirmationToken();
         token.setUser(user);
