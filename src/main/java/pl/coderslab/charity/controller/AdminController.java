@@ -1,5 +1,6 @@
 package pl.coderslab.charity.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,8 @@ public class AdminController {
     }
 
     @GetMapping("")
-    public String adminPanel(Model model) {
+    public String adminPanel(Model model, Authentication auth) {
+        model.addAttribute("loggedAdmin", userService.findByEmail(auth.getName()));
         model.addAttribute("countBags", donationService.countSum());
         model.addAttribute("countDonations", donationService.countAll());
 

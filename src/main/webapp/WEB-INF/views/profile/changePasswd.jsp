@@ -33,15 +33,15 @@
         <form:form class="form--contact" method="post" action="/profile/${user.id}/change-pass">
 
             <div class="form-group">
-                <input id="oldPassword" type="text" name="oldPassword" placeholder="Stare hasło">
+                <input id="oldPassword" type="password" name="oldPassword" placeholder="Stare hasło">
             </div>
 
             <div class="form-group">
-                <input id="newPassword" type="text" name="newPassword" placeholder="Nowe hasło">
+                <input id="newPassword" type="password" name="newPassword" placeholder="Nowe hasło">
             </div>
 
             <div class="form-group">
-                <input id="confirmPassword" type="text" name="confirmPassword" placeholder="Powtórz hasło">
+                <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Powtórz hasło">
             </div>
 
             <div id="error" class="form-group hidden" style="color: red;">

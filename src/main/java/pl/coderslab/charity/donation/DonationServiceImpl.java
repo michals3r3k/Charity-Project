@@ -22,6 +22,6 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     public Long countSum() {
-        return donationRepository.countSum();
+        return donationRepository.countSum().orElse(0L);
     }
 }
