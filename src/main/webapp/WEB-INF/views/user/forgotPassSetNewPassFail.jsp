@@ -19,10 +19,10 @@
     <h2>Zaponiałem hasła</h2>
     <form:form method="post">
         <div class="form-group">
-            <input id="newPassword" type="text" name="newPassword" placeholder="Nowe hasło" />
+            <input id="newPassword" type="password" name="newPassword" placeholder="Nowe hasło" />
         </div>
         <div class="form-group">
-            <input id="confirmPassword" type="text" name="confirmPassword" placeholder="Potwierdź hasło" />
+            <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Potwierdź hasło" />
         </div>
         <div id="error" class="form-group" style="color: red;">
             <h3>Hasła nie pasują do siebie!</h3>

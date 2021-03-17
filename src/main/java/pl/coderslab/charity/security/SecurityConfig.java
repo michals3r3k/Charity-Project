@@ -21,6 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/donation/**").access("@userSecurity.isEnabled(authentication)")
+                .antMatchers("/admin/user/delete/{userId}", "/admin/admin/take-off-permissions/{userId}")
+                    .access("hasRole('ADMIN') and !@userSecurity.isCurrentUser(authentication, #userId)")
                 .antMatchers("/admin/**").hasAuthority(RoleType.ROLE_ADMIN.toString())
                 .antMatchers("/profile/{userId}/**").access("hasRole('ADMIN') or @userSecurity.isCurrentUser(authentication, #userId)")
                 .anyRequest().permitAll()
