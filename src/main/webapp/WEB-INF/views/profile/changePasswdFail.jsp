@@ -45,7 +45,7 @@
             </div>
 
             <div id="error" class="form-group" style="color: red;">
-                <h3>Błędne Stare Hasło!</h3>
+                <h3>${message}</h3>
             </div>
 
             <div class="form-group form-group--50">

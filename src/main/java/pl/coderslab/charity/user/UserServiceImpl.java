@@ -13,6 +13,7 @@ import pl.coderslab.charity.role.Role;
 import pl.coderslab.charity.role.RoleType;
 import pl.coderslab.charity.role.RoleService;
 import pl.coderslab.charity.email.EmailService;
+import pl.coderslab.charity.security.UserPasswordValidator;
 import pl.coderslab.charity.token.ConfirmationToken;
 import pl.coderslab.charity.token.ConfirmationTokenService;
 import pl.coderslab.charity.token.TokenType;
@@ -49,28 +50,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void save(User user) {
-        user.setEnabled(false);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Set.of(roleService.findByRoleType(RoleType.ROLE_USER)));
+    public boolean save(User user) {
+        if(UserPasswordValidator.isPasswordValid(user.getPassword())) {
+            user.setEnabled(false);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(Set.of(roleService.findByRoleType(RoleType.ROLE_USER)));
 
-        ConfirmationToken token = new ConfirmationToken();
-        token.setUser(user);
-        token.setToken(UUID.randomUUID().toString());
-        token.setTokenType(TokenType.ACTIVATION);
-        token.setUsed(false);
+            ConfirmationToken token = new ConfirmationToken();
+            token.setUser(user);
+            token.setToken(UUID.randomUUID().toString());
+            token.setTokenType(TokenType.ACTIVATION);
+            token.setUsed(false);
 
-        userRepository.save(user);
-        tokenService.save(token);
+            userRepository.save(user);
+            tokenService.save(token);
 
-        MyMailMessage message = MyMailMessage.builder()
-                .toUser(user)
-                .link(LOCAL_VERIFY_LINK + token.getToken())
-                .subject(LOCAL_VERIFY_SUBJECT)
-                .build();
-        message.buildEmailVerify();
+            MyMailMessage message = MyMailMessage.builder()
+                    .toUser(user)
+                    .link(LOCAL_VERIFY_LINK + token.getToken())
+                    .subject(LOCAL_VERIFY_SUBJECT)
+                    .build();
+            message.buildEmailVerify();
 
-        emailService.send(message);
+            emailService.send(message);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -110,13 +115,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean setNewPassword(User user, String oldPassword, String newPassword, String confirmPassword) {
+    public int setNewPassword(User user, String oldPassword, String newPassword, String confirmPassword) {
         if (passwordEncoder.matches(oldPassword, user.getPassword()) && newPassword.equals(confirmPassword)) {
+            if(!UserPasswordValidator.isPasswordValid(newPassword)){
+                return 1;
+            }
             user.setPassword(newPassword);
             saveUserPassword(user);
-            return true;
+            return 0;
         }
-        return false;
+        return 2;
     }
 
     @Override
@@ -180,6 +188,9 @@ public class UserServiceImpl implements UserService {
         }
 
         if (newPassword.equals(confirmPassword)) {
+            if(!UserPasswordValidator.isPasswordValid(newPassword)){
+                return 3;
+            }
             User user = confirmationToken.getUser();
             user.setPassword(newPassword);
             saveUserPassword(user);

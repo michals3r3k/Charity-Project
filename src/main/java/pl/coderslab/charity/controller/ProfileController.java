@@ -11,6 +11,8 @@ import pl.coderslab.charity.user.UserService;
 @AllArgsConstructor
 @RequestMapping("/profile")
 public class ProfileController {
+    private static final String PASSWORD_NOT_VALID = "Hasło powinno mieć conajmniej 8 znaków i jedną: literę małą, leterę dużą, cyfrę i znak specjalny";
+    private static final String BAD_OLD_PASSWORD = "Błędne stare hasło!";
     private final UserService userService;
 
     //PROFILE EDIT
@@ -44,11 +46,18 @@ public class ProfileController {
     ) {
         User user = userService.findById(userId);
 
-        if(userService.setNewPassword(user, oldPassword, newPassword, confirmPassword)){
-            return "redirect:/";
+        switch (userService.setNewPassword(user, oldPassword, newPassword, confirmPassword)){
+            case 0:
+                return "redirect:/";
+            case 1:
+                model.addAttribute("user", userService.findById(userId));
+                model.addAttribute("message", PASSWORD_NOT_VALID);
+                return "profile/changePasswdFail";
+            case 2:
+                model.addAttribute("user", userService.findById(userId));
+                model.addAttribute("message", BAD_OLD_PASSWORD);
+                return "profile/changePasswdFail";
         }
-
-        model.addAttribute("user", user);
-        return "profile/changePasswdFail";
+        return "profile/changePasswd";
     }
 }
