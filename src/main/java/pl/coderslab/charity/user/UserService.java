@@ -8,14 +8,14 @@ public interface UserService {
     User findByEmail(String email);
     List<User> findAll();
     void saveUserPassword(User user);
-    void save(User user);
+    boolean save(User user);
     void delete(User user);
     void edit(User user);
     boolean forgotPass(String email);
     User findById(Long id);
     List<User> findAllByRoleType(RoleType roleType);
     void confirmEmail(String token);
-    boolean setNewPassword(User user, String oldPassword, String newPassword, String confirmPassword);
+    int setNewPassword(User user, String oldPassword, String newPassword, String confirmPassword);
     boolean isUserExists(String email);
     void editUsersDetails(Long userId, User user);
     int remindPassword(String token, String newPassword, String confirmPassword);

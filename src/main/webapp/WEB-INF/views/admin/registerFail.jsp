@@ -16,22 +16,27 @@
 </header>
 
 <section class="login-page">
-    <h2>Zaponiałem hasła</h2>
-    <form:form method="post">
+    <h2>Załóż konto</h2>
+    <form:form modelAttribute="user">
         <div class="form-group">
-            <input id="newPassword" type="password" name="newPassword" placeholder="Nowe hasło" />
+            <form:input path="firstName" placeholder="Imię"/>
         </div>
         <div class="form-group">
-            <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Potwierdź hasło" />
+            <form:input path="lastName" placeholder="Nazwisko"/>
+        </div>
+        <div class="form-group">
+            <form:input path="email" placeholder="Email"/>
+        </div>
+        <div class="form-group">
+            <form:input path="password" placeholder="Hasło" type="password"/>
         </div>
         <div id="error" class="form-group" style="color: red;">
             <h3>${message}</h3>
         </div>
         <div class="form-group form-group--buttons">
-            <input id="submit-btn" type="submit" class="btn" value="Zmień hasło"/>
+            <a href="/login" class="btn btn--without-border">Zaloguj się</a>
+            <button class="btn" type="submit">Załóż konto</button>
         </div>
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        <input type="hidden" name="confirmationToken" value="${token}"/>
     </form:form>
 </section>
 
