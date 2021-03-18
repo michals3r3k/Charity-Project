@@ -1,5 +1,6 @@
 package pl.coderslab.charity.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,29 +11,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.charity.donation.DonationService;
 import pl.coderslab.charity.institution.Institution;
 import pl.coderslab.charity.institution.InstitutionService;
-import pl.coderslab.charity.role.Role;
 import pl.coderslab.charity.role.RoleService;
 import pl.coderslab.charity.role.RoleType;
 import pl.coderslab.charity.user.User;
 import pl.coderslab.charity.user.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
     private final InstitutionService institutionService;
     private final DonationService donationService;
     private final UserService userService;
     private final RoleService roleService;
-
-    public AdminController(InstitutionService institutionService, DonationService donationService, UserService userService, RoleService roleService) {
-        this.institutionService = institutionService;
-        this.donationService = donationService;
-        this.userService = userService;
-        this.roleService = roleService;
-    }
 
     @GetMapping("")
     public String adminPanel(Model model, Authentication auth) {
@@ -87,16 +80,7 @@ public class AdminController {
     @GetMapping("/admin/take-off-permissions/{id}")
     public String takeOffPermissionsGet(@PathVariable Long id) {
         User user = userService.findById(id);
-        Role roleTypeAdmin = roleService.findByRoleType(RoleType.ROLE_ADMIN);
-        Role roleTypeUser = roleService.findByRoleType(RoleType.ROLE_USER);
-
-        Set<Role> roles = user.getRoles();
-        roles.remove(roleTypeAdmin);
-        roles.add(roleTypeUser);
-        user.setRoles(roles);
-
-        userService.edit(user);
-
+        userService.takeOffAdminPermissions(user);
         return "redirect:/admin#admins";
     }
 

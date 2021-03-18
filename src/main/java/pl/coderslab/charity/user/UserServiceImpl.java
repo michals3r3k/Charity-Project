@@ -1,8 +1,14 @@
 package pl.coderslab.charity.user;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.coderslab.charity.email.MyMailMessage;
 import pl.coderslab.charity.role.Role;
 import pl.coderslab.charity.role.RoleType;
 import pl.coderslab.charity.role.RoleService;
@@ -11,13 +17,19 @@ import pl.coderslab.charity.token.ConfirmationToken;
 import pl.coderslab.charity.token.ConfirmationTokenService;
 import pl.coderslab.charity.token.TokenType;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final static String LOCAL_VERIFY_LINK = "http://localhost:8080/register/confirm?token=";
+    private final static String LOCAL_FORGOT_PASS_LINK = "http://localhost:8080/register/forgot-pass/set-new?token=";
+    private final static String LOCAL_VERIFY_SUBJECT = "Charity.com: Aktywacja konta";
+    private final static String LOCAL_FORGOT_PASS_SUBJECT = "Charity.com: Zapomniane hasło";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleService roleService;
@@ -36,6 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void save(User user) {
         user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -49,40 +62,85 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         tokenService.save(token);
-        emailService.send(
-                user.getEmail(),
-                "Charity.com: Aktywacja konta",
-                buildEmailVerify(
-                        user.getFirstName(),
-                        "http://localhost:8080/register/confirm?token=" + token.getToken()
-                )
-        );
 
+        MyMailMessage message = MyMailMessage.builder()
+                .toUser(user)
+                .link(LOCAL_VERIFY_LINK + token.getToken())
+                .subject(LOCAL_VERIFY_SUBJECT)
+                .build();
+        message.buildEmailVerify();
+
+        emailService.send(message);
     }
 
     @Override
-    public void forgotPass(User user) {
-        ConfirmationToken token = new ConfirmationToken();
-        token.setUsed(false);
-        token.setTokenType(TokenType.PASSWORD);
-        token.setToken(UUID.randomUUID().toString());
-        token.setUser(user);
+    @Transactional
+    public boolean forgotPass(String email) {
+        if (isUserExists(email)) {
+            User user = findByEmail(email);
+            ConfirmationToken token = new ConfirmationToken();
+            token.setUsed(false);
+            token.setTokenType(TokenType.PASSWORD);
+            token.setToken(UUID.randomUUID().toString());
+            token.setUser(user);
 
-        tokenService.save(token);
-        emailService.send(
-                user.getEmail(),
-                "Charity.com: Zapomniane hasło",
-                buildEmailForgotPass(
-                        user.getFirstName(),
-                        "http://localhost:8080/register/forgot-pass/set-new?token=" + token.getToken()
-                )
-        );
+            tokenService.save(token);
+
+            MyMailMessage message = MyMailMessage.builder()
+                    .toUser(user)
+                    .subject(LOCAL_FORGOT_PASS_SUBJECT)
+                    .link(LOCAL_FORGOT_PASS_LINK + token.getToken())
+                    .build();
+            message.buildEmailForgotPass();
+
+            emailService.send(message);
+        }
+
+        return isUserExists(email);
+    }
+
+    @Override
+    @Transactional
+    public void confirmEmail(String token) {
+        ConfirmationToken confirmationToken = tokenService.findByToken(token);
+        User user = confirmationToken.getUser();
+        user.setEnabled(true);
+        edit(user);
+        tokenService.delete(confirmationToken);
+    }
+
+    @Override
+    public boolean setNewPassword(User user, String oldPassword, String newPassword, String confirmPassword) {
+        if (passwordEncoder.matches(oldPassword, user.getPassword()) && newPassword.equals(confirmPassword)) {
+            user.setPassword(newPassword);
+            saveUserPassword(user);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void saveUserPassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    @Override
+    public void editUsersDetails(Long userId, User user) {
+        User userFromDB = findById(userId);
+        userFromDB.setFirstName(user.getFirstName());
+        userFromDB.setLastName(user.getLastName());
+        userFromDB.setEmail(user.getEmail());
+        edit(userFromDB);
+
+        Set<GrantedAuthority> authorities = userFromDB
+                .getRoles()
+                .stream()
+                .map(r -> new SimpleGrantedAuthority(r.getRoleType().toString()))
+                .collect(Collectors.toSet());
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userFromDB.getEmail(), userFromDB.getPassword(), authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     @Override
@@ -101,146 +159,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isUserExists(String email) {
+        return findByEmail(email) != null;
+    }
+
+    @Override
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("User with id=%s does not exists", id)));
     }
 
-    private String buildEmailVerify(String name, String link) {
-        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
-                "\n" +
-                "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
-                "\n" +
-                "  <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;min-width:100%;width:100%!important\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"100%\" height=\"53\" bgcolor=\"#0b0c0c\">\n" +
-                "        \n" +
-                "        <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
-                "          <tbody><tr>\n" +
-                "            <td width=\"70\" bgcolor=\"#0b0c0c\" valign=\"middle\">\n" +
-                "                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td style=\"padding-left:10px\">\n" +
-                "                  \n" +
-                "                    </td>\n" +
-                "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Potwierdź swój email</span>\n" +
-                "                    </td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "              </a>\n" +
-                "            </td>\n" +
-                "          </tr>\n" +
-                "        </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"10\" height=\"10\" valign=\"middle\"></td>\n" +
-                "      <td>\n" +
-                "        \n" +
-                "                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td bgcolor=\"#1D70B8\" width=\"100%\" height=\"10\"></td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\" height=\"10\"></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
-                "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Cześć " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Dziękujemy za rejestrację. Wciśnij przycisk poniżej, aby aktywować swoje konto: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Aktywuj Teraz</a> </p></blockquote>\n <p>Do zobaczenia!</p>" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
-                "\n" +
-                "</div></div>";
+    @Override
+    @Transactional
+    public int remindPassword(String token, String newPassword, String confirmPassword) {
+        ConfirmationToken confirmationToken;
+        try {
+            confirmationToken = tokenService.findByToken(token);
+        } catch (IllegalStateException e) {
+            return 0;
+        }
+
+        if (newPassword.equals(confirmPassword)) {
+            User user = confirmationToken.getUser();
+            user.setPassword(newPassword);
+            saveUserPassword(user);
+            tokenService.delete(confirmationToken);
+            return 1;
+        } else {
+            return 2;
+        }
     }
 
-    private String buildEmailForgotPass(String name, String link) {
-        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
-                "\n" +
-                "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
-                "\n" +
-                "  <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;min-width:100%;width:100%!important\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"100%\" height=\"53\" bgcolor=\"#0b0c0c\">\n" +
-                "        \n" +
-                "        <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
-                "          <tbody><tr>\n" +
-                "            <td width=\"70\" bgcolor=\"#0b0c0c\" valign=\"middle\">\n" +
-                "                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td style=\"padding-left:10px\">\n" +
-                "                  \n" +
-                "                    </td>\n" +
-                "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Ustaw nowe hasło</span>\n" +
-                "                    </td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "              </a>\n" +
-                "            </td>\n" +
-                "          </tr>\n" +
-                "        </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"10\" height=\"10\" valign=\"middle\"></td>\n" +
-                "      <td>\n" +
-                "        \n" +
-                "                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td bgcolor=\"#1D70B8\" width=\"100%\" height=\"10\"></td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\" height=\"10\"></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
-                "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Cześć " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Wygląda na to, że zapomniałeś swojego hasła. Wciśnij przycisk poniżej, aby ustawić nowe: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Ustaw Hasło</a> </p></blockquote>\n <p>Do zobaczenia!</p>" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
-                "\n" +
-                "</div></div>";
+    @Override
+    public void takeOffAdminPermissions(User user) {
+        Role roleTypeAdmin = roleService.findByRoleType(RoleType.ROLE_ADMIN);
+        Role roleTypeUser = roleService.findByRoleType(RoleType.ROLE_USER);
+
+        Set<Role> roles = user.getRoles();
+        roles.remove(roleTypeAdmin);
+        roles.add(roleTypeUser);
+        user.setRoles(roles);
+
+        edit(user);
     }
 }

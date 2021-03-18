@@ -11,7 +11,13 @@ public interface UserService {
     void save(User user);
     void delete(User user);
     void edit(User user);
-    void forgotPass(User user);
+    boolean forgotPass(String email);
     User findById(Long id);
     List<User> findAllByRoleType(RoleType roleType);
+    void confirmEmail(String token);
+    boolean setNewPassword(User user, String oldPassword, String newPassword, String confirmPassword);
+    boolean isUserExists(String email);
+    void editUsersDetails(Long userId, User user);
+    int remindPassword(String token, String newPassword, String confirmPassword);
+    void takeOffAdminPermissions(User user);
 }

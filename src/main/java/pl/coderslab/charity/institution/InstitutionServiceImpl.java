@@ -1,16 +1,14 @@
 package pl.coderslab.charity.institution;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class InstitutionServiceImpl implements InstitutionService {
     private final InstitutionRepository institutionRepository;
-
-    public InstitutionServiceImpl(InstitutionRepository institutionRepository) {
-        this.institutionRepository = institutionRepository;
-    }
 
     @Override
     public Institution findById(Long id) {
