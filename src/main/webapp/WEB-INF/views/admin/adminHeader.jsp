@@ -19,7 +19,7 @@
             Witaj Admin: ${currentUser.firstName} ${currentUser.lastName}
             <ul class="dropdown">
                 <li><a href="/profile/${currentUser.id}/edit">Profil</a></li>
-                <li><a href="#">Moje zbiórki</a></li>
+                <li><a href="/profile/${currentUser.id}/donations">Moje zbiórki</a></li>
                 <li>
                     <form action="<c:url value="/logout"/> " method="post">
                         <input type="submit" value="Wyloguj" class="btn-link">
@@ -36,5 +36,6 @@
         <li><a href="/admin#institutions" class="btn btn--without-border">Fundacje</a></li>
         <li><a href="/admin#admins" class="btn btn--without-border">Administratorzy</a></li>
         <li><a href="/admin#users" class="btn btn--without-border">Użytkownicy</a></li>
+        <li><a href="/admin#donations" class="btn btn--without-border">Dary</a></li>
     </ul>
 </nav>

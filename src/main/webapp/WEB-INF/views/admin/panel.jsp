@@ -168,34 +168,50 @@
     </table>
 </section>
 
-<%--<section id="steps" class="steps">--%>
-<%--    <h2>Wystarczą 4 proste kroki</h2>--%>
+<section id="donations" class="steps">
+    <h2>Lista darów</h2>
 
-<%--    <div class="steps--container">--%>
-<%--        <div class="steps--item">--%>
-<%--            <span class="icon icon--hands"></span>--%>
-<%--            <h3>Wybierz rzeczy</h3>--%>
-<%--            <p>ubrania, zabawki, sprzęt i inne</p>--%>
-<%--        </div>--%>
-<%--        <div class="steps--item">--%>
-<%--            <span class="icon icon--arrow"></span>--%>
-<%--            <h3>Spakuj je</h3>--%>
-<%--            <p>skorzystaj z worków na śmieci</p>--%>
-<%--        </div>--%>
-<%--        <div class="steps--item">--%>
-<%--            <span class="icon icon--glasses"></span>--%>
-<%--            <h3>Zdecyduj komu chcesz pomóc</h3>--%>
-<%--            <p>wybierz zaufane miejsce</p>--%>
-<%--        </div>--%>
-<%--        <div class="steps--item">--%>
-<%--            <span class="icon icon--courier"></span>--%>
-<%--            <h3>Zamów kuriera</h3>--%>
-<%--            <p>kurier przyjedzie w dogodnym terminie</p>--%>
-<%--        </div>--%>
-<%--    </div>--%>
+    <table class="custom-table">
+        <thead>
+        <tr class="custom-tr-dark">
+            <th class="custom-th">Id</th>
+            <th>Instytucja</th>
+            <th>Kategorie</th>
+            <th>Godzina</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach items="${donations}" var="donation">
+            <tr class="custom-tr">
+                <td class="custom-td">${donation.id}</td>
+                <td class="custom-td">${donation.institution.name}</td>
+                <td class="custom-td">
+                    <c:forEach items="${donation.categories}" var="category">
+                        ${category.name}
+                    </c:forEach>
+                </td>
+                <td class="custom-td">${donation.pickUpTime}</td>
+                <td class="custom-td">${donation.pickUpDate}</td>
+                <td class="custom-td">
+                        <c:if test="${donation.taken}">
+                            Odebrane
+                        </c:if>
+                        <c:if test="${!donation.taken}">
+                            Nieodebrane
+                        </c:if>
+                </td>
+                <td class="custom-td">${donation.user.email}</td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
 
-<%--    <a href="#" class="btn btn--large">Załóż konto</a>--%>
-<%--</section>--%>
+    <a href="/donation" class="btn btn--large">Przekaż dary</a>
+</section>
+
 <script src="<c:url value="/resources/js/app.js"/>"></script>
 </body>
 </html>

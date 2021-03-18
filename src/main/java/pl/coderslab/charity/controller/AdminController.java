@@ -36,6 +36,7 @@ public class AdminController {
         model.addAttribute("institutions", institutionService.findAll());
         model.addAttribute("admins", userService.findAllByRoleType(RoleType.ROLE_ADMIN));
         model.addAttribute("users", userService.findAll());
+        model.addAttribute("donations", donationService.findAll());
 
         return "admin/panel";
     }

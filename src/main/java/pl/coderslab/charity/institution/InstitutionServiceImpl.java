@@ -2,6 +2,7 @@ package pl.coderslab.charity.institution;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.coderslab.charity.donation.DonationService;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InstitutionServiceImpl implements InstitutionService {
     private final InstitutionRepository institutionRepository;
+    private final DonationService donationService;
 
     @Override
     public Institution findById(Long id) {
@@ -20,6 +22,11 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Override
     public void delete(Institution institution) {
+        donationService.findAllByInstitution(institution).forEach(donation -> {
+                    donation.setInstitution(null);
+                    donationService.save(donation);
+                });
+
         institutionRepository.delete(institution);
     }
 

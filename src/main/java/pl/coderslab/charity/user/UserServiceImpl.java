@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.coderslab.charity.donation.DonationService;
 import pl.coderslab.charity.email.MyMailMessage;
 import pl.coderslab.charity.role.Role;
 import pl.coderslab.charity.role.RoleType;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final ConfirmationTokenService tokenService;
     private final EmailService emailService;
+    private final DonationService donationService;
 
     @Override
     public User findByEmail(String email) {
@@ -163,6 +165,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(User user) {
+        donationService.findAllByUser(user).forEach(donation -> {
+            donation.setUser(null);
+            donationService.save(donation);
+        });
         userRepository.delete(user);
     }
 

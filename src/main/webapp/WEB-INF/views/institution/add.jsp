@@ -27,10 +27,8 @@
 </header>
 <footer>
 <div class="contact" id="contact">
-<%--    <h2>Edytuj ${institution.name}</h2>--%>
     <h3>Formularz dodawania</h3>
     <form:form modelAttribute="institution" cssClass="form--contact" method="post">
-<%--        <div class="form-group form-group--50"><input type="text" name="name" placeholder="Imię"/></div>--%>
         <div class="form-group">
             <form:input path="name" placeholder="Nazwa fundacji"/>
         </div>

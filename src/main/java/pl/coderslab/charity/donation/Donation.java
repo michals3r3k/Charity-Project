@@ -24,7 +24,7 @@ public class Donation {
     private String city;
     private String zipCode;
     private String phoneNumber;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @JoinTable(name = "donation_category")
     private List<Category> categories;
     @ManyToOne
@@ -32,7 +32,10 @@ public class Donation {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate pickUpDate;
     private LocalTime pickUpTime;
+    private LocalDate pickedUpDate;
+    private LocalTime pickedUpTime;
     private String pickupComment;
+    private boolean taken;
     @ManyToOne
     private User user;
 
