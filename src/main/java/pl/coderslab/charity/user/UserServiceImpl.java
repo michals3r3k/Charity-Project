@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean save(User user) {
-        if(UserPasswordValidator.isPasswordValid(user.getPassword())) {
+        if (UserPasswordValidator.isPasswordValid(user.getPassword())) {
             user.setEnabled(false);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(Set.of(roleService.findByRoleType(RoleType.ROLE_USER)));
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int setNewPassword(User user, String oldPassword, String newPassword, String confirmPassword) {
         if (passwordEncoder.matches(oldPassword, user.getPassword()) && newPassword.equals(confirmPassword)) {
-            if(!UserPasswordValidator.isPasswordValid(newPassword)){
+            if (!UserPasswordValidator.isPasswordValid(newPassword)) {
                 return 1;
             }
             user.setPassword(newPassword);
@@ -194,7 +194,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (newPassword.equals(confirmPassword)) {
-            if(!UserPasswordValidator.isPasswordValid(newPassword)){
+            if (!UserPasswordValidator.isPasswordValid(newPassword)) {
                 return 3;
             }
             User user = confirmationToken.getUser();

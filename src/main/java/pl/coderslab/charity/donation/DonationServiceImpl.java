@@ -1,5 +1,6 @@
 package pl.coderslab.charity.donation;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.charity.institution.Institution;
 import pl.coderslab.charity.user.User;
@@ -9,12 +10,9 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class DonationServiceImpl implements DonationService {
     private final DonationRepository donationRepository;
-
-    public DonationServiceImpl(DonationRepository donationRepository) {
-        this.donationRepository = donationRepository;
-    }
 
     @Override
     public void save(Donation donation) {

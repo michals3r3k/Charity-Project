@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.charity.user.User;
 import pl.coderslab.charity.user.UserService;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("")
