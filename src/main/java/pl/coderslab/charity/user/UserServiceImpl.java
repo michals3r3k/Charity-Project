@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.coderslab.charity.donation.Donation;
 import pl.coderslab.charity.donation.DonationService;
 import pl.coderslab.charity.email.MyMailMessage;
 import pl.coderslab.charity.role.Role;
@@ -136,12 +137,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void editUsersDetails(Long userId, User user) {
         User userFromDB = findById(userId);
+        List<Donation> donations = donationService.findAllByUser(userFromDB);
         userFromDB.setFirstName(user.getFirstName());
         userFromDB.setLastName(user.getLastName());
         userFromDB.setEmail(user.getEmail());
         edit(userFromDB);
+
+        donations.forEach(donation -> {
+            donation.setEmail(userFromDB.getEmail());
+            donationService.edit(donation);
+        });
 
         Set<GrantedAuthority> authorities = userFromDB
                 .getRoles()
@@ -167,7 +175,7 @@ public class UserServiceImpl implements UserService {
     public void delete(User user) {
         donationService.findAllByUser(user).forEach(donation -> {
             donation.setUser(null);
-            donationService.save(donation);
+            donationService.edit(donation);
         });
         userRepository.delete(user);
     }

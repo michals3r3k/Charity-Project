@@ -24,7 +24,7 @@ public class DonationController {
     public String donationFormGet(Model model, Authentication auth) {
         model.addAttribute("donation", new Donation());
         model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("institutions", institutionService.findAll());
+        model.addAttribute("institutions", institutionService.findAllActive());
         model.addAttribute("currentUser", userService.findByEmail(auth.getName()));
         return "donation/form";
     }

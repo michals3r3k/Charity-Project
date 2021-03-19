@@ -38,5 +38,6 @@ public class Donation {
     private boolean taken;
     @ManyToOne
     private User user;
+    private String email;
 
 }

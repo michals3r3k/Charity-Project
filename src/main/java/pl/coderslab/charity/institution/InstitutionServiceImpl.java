@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.charity.donation.DonationService;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class InstitutionServiceImpl implements InstitutionService {
     private final InstitutionRepository institutionRepository;
-    private final DonationService donationService;
 
     @Override
     public Institution findById(Long id) {
@@ -21,24 +22,33 @@ public class InstitutionServiceImpl implements InstitutionService {
     }
 
     @Override
+    @Transactional
     public void delete(Institution institution) {
-        donationService.findAllByInstitution(institution).forEach(donation -> {
-                    donation.setInstitution(null);
-                    donationService.save(donation);
-                });
+        institution.setActive(false);
+        edit(institution);
+    }
 
-        institutionRepository.delete(institution);
+    @Override
+    public void edit(Institution institution) {
+        institutionRepository.save(institution);
     }
 
     @Override
     public void save(Institution institution) {
+        institution.setActive(true);
         institutionRepository.save(institution);
+    }
+
+    @Override
+    public List<Institution> findAllActive() {
+        return institutionRepository.findAll()
+                .stream()
+                .filter(Institution::isActive)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Institution> findAll() {
         return institutionRepository.findAll();
     }
-
-
 }

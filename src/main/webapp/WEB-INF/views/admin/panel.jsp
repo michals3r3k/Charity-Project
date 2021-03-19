@@ -53,6 +53,7 @@
             <th class="custom-th">Id</th>
             <th>Nazwa</th>
             <th>Cel</th>
+            <th>Stan</th>
             <th>Akcja</th>
         </tr>
         </thead>
@@ -62,9 +63,12 @@
                 <td class="custom-td">${institution.id}</td>
                 <td class="custom-td">${institution.name}</td>
                 <td class="custom-td">${institution.description}</td>
+                <td class="custom-td">${institution.active}</td>
                 <td class="custom-td">
                     <a href="/admin/institution/edit/${institution.id}" class="btn btn--without-border">Edytuj</a>
+                    <c:if test="${institution.active}">
                     <a href="/admin/institution/delete/${institution.id}" class="btn btn--without-border">Usuń</a>
+                    </c:if>
                 </td>
             </tr>
         </c:forEach>
@@ -177,9 +181,9 @@
             <th class="custom-th">Id</th>
             <th>Instytucja</th>
             <th>Kategorie</th>
-            <th>Godzina</th>
-            <th>Data</th>
+            <th>Data i godzina</th>
             <th>Status</th>
+            <th>Odebrane o:</th>
             <th>Email</th>
         </tr>
         </thead>
@@ -193,8 +197,7 @@
                         ${category.name}
                     </c:forEach>
                 </td>
-                <td class="custom-td">${donation.pickUpTime}</td>
-                <td class="custom-td">${donation.pickUpDate}</td>
+                <td class="custom-td">${donation.pickUpDate} ${donation.pickUpTime}</td>
                 <td class="custom-td">
                         <c:if test="${donation.taken}">
                             Odebrane
@@ -203,7 +206,8 @@
                             Nieodebrane
                         </c:if>
                 </td>
-                <td class="custom-td">${donation.user.email}</td>
+                <td class="custom-td">${donation.pickedUpDate} ${donation.pickedUpTime}</td>
+                <td class="custom-td">${donation.email}</td>
             </tr>
         </c:forEach>
         </tbody>

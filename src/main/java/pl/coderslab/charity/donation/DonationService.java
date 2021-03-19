@@ -1,6 +1,7 @@
 package pl.coderslab.charity.donation;
 
 
+import pl.coderslab.charity.category.Category;
 import pl.coderslab.charity.institution.Institution;
 import pl.coderslab.charity.user.User;
 
@@ -10,9 +11,11 @@ public interface DonationService {
     Long countSum();
     Long countAll();
     void save(Donation donation);
+    void edit(Donation donation);
     List<Donation> findAllByInstitution(Institution institution);
     List<Donation> findAllByUser(User user);
     List<Donation> findAll();
     void switchTaken(Long donationId);
     Donation findById(Long id);
+    List<Donation> findAllByCategory(Category category);
 }
