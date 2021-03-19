@@ -2,6 +2,7 @@ package pl.coderslab.charity.donation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.coderslab.charity.category.Category;
 import pl.coderslab.charity.institution.Institution;
 import pl.coderslab.charity.user.User;
 
@@ -16,6 +17,12 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     public void save(Donation donation) {
+        donation.setEmail(donation.getUser().getEmail());
+        donationRepository.save(donation);
+    }
+
+    @Override
+    public void edit(Donation donation) {
         donationRepository.save(donation);
     }
 
@@ -32,6 +39,11 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public List<Donation> findAllByInstitution(Institution institution) {
         return donationRepository.findAllByInstitution(institution);
+    }
+
+    @Override
+    public List<Donation> findAllByCategory(Category category) {
+        return donationRepository.findAllByCategory(category);
     }
 
     @Override

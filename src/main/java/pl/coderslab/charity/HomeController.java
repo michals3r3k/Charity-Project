@@ -19,7 +19,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String homeAction(Model model) {
-        model.addAttribute("institutes", institutionService.findAll());
+        model.addAttribute("institutes", institutionService.findAllActive());
         model.addAttribute("countBags", donationService.countSum());
         model.addAttribute("countDonations", donationService.countAll());
         return "index";

@@ -3,6 +3,7 @@ package pl.coderslab.charity.donation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import pl.coderslab.charity.category.Category;
 import pl.coderslab.charity.institution.Institution;
 import pl.coderslab.charity.user.User;
 
@@ -19,4 +20,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
 
     List<Donation> findAllByInstitution(Institution institution);
     List<Donation> findAllByUser(User user);
+    @Query("SELECT d from Donation d where ?1 member of d.categories")
+    List<Donation> findAllByCategory(Category category);
 }

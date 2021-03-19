@@ -51,7 +51,7 @@ public class AdminController {
 
     @PostMapping("/institution/edit")
     public String institutionEditPost(Institution institution) {
-        institutionService.save(institution);
+        institutionService.edit(institution);
         return "redirect:/admin#institutions";
     }
 
